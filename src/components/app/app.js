@@ -17,7 +17,7 @@ class App extends Component {
                 { name: 'Ertugrul', viewers: 789, favourite: false, like: false, id: 2 },
                 { name: 'Omar', viewers: 1202, favourite: false, like: false, id: 3 },
             ]
-        };
+        }
     }
 
     onDelete = id => {
