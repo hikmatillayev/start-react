@@ -8,69 +8,72 @@ import MovieList from '../movie-list/movie-list'
 import MoviesAddForm from '../movies-add-form/movies-add-form'
 import { v4 as uuidv4 } from 'uuid';
 
-const App=()=>{
-    const [data, setData]=useState(
+const App = () => {
+    const [data, setData] = useState(
         [
             { name: 'Empire of osman', viewers: 567, favourite: false, like: false, id: 1 },
             { name: 'Ertugrul', viewers: 789, favourite: false, like: false, id: 2 },
             { name: 'Omar', viewers: 1202, favourite: false, like: false, id: 3 },
         ])
-        const [term, setTerm]=useState('')
-        const [filter, setFilter]=useState('')
-}
+    const [term, setTerm] = useState('')
+    const [filter, setFilter] = useState('all')
 
-class App extends Component {
-
-    onDelete = id => {
-        this.setState(({ data }) => {
-            const newArr = data.filter(c => c.id !== id)
-
-            return {
-                data: newArr,
-            }
-        })
+    const onDelete = id => {
+        setData(data.filter(c => c.id !== id))
     }
 
-    addForm = item => {
+    const addForm = item => {
         const newItem = { name: item.name, viewers: item.viewers, id: uuidv4(), favourite: false, like: false }
-        this.setState(({ data }) => {
-            const newArr = [...data, newItem]
-            return {
-                data: newArr
+        const newArr = [...data, newItem]
+        setData(newArr)
+    }
+
+    const onToggleProp = (id, prop) => {
+        const newArr = data.map(item => {
+            if (item.id === id) {
+                return { ...item, favourite: !item.favourite }
             }
+            return item
         })
+        setData(newArr)
     }
 
-    onToggleProp = (id, prop) => {
-        this.setState(({ data }) => ({
-            data: data.map(item => {
-                if (item.id === id) {
-                    return { ...item, favourite: !item.favourite }
-                }
-                return item
-            }),
-        }))
-        console.log(id);
+    const searchHandler = (arr, term) => {
+        if (term === 0) {
+            return arr
+        }
+
+        return arr.filter(item => item.name.toLowercase().indexOf(term) > -1)
     }
 
-    render() {
-        const { data } = this.state
-        const allMoviesCount = data.length
-        const favouriteMovieCount = data.filter(c => c.favourite).length
-        return (
-            <div className='app font-monospace'>
-                <div className='content'>
-                    <AppInfo allMoviesCount={allMoviesCount} favouriteMovieCount={favouriteMovieCount} />
-                    <div className='search-panel'>
-                        <SearchPanel />
-                        <AppFilter />
-                    </div>
-                    <MovieList onToggleProp={this.onToggleProp} data={data} onDelete={this.onDelete} />
-                    <MoviesAddForm addForm={this.addForm} />
+    const filterHandler = (arr, filter) => {
+        switch (filter) {
+            case 'popular':
+                return arr.filter(c => c.like)
+            case 'mostViewers':
+                return arr.filter(c => c.viewers > 800)
+            default:
+                return arr
+        }
+    }
+
+    const updateTermHandler = term => setTerm(term)
+
+    const updateFilterHandler = filter => setFilter(filter)
+
+    return (
+        <div className='app font-monospace'>
+            <div className='content'>
+                <AppInfo allMoviesCount={data.length} favouriteMovieCount={ data.filter(c => c.favourite).length} />
+                <div className='search-panel'>
+                    <SearchPanel updateTermHandler={updateTermHandler} />
+                    <AppFilter filter={filter} updateFilterHandler={updateFilterHandler} />
                 </div>
+                <MovieList onToggleProp={onToggleProp} data={filterHandler(searchHandler(data, term), filter)} onDelete={onDelete} />
+                <MoviesAddForm addForm={addForm} />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default App
