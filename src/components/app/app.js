@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, useState } from 'react'
 import './app.css'
 
 import AppInfo from '../app-info/app-info'
@@ -8,17 +8,18 @@ import MovieList from '../movie-list/movie-list'
 import MoviesAddForm from '../movies-add-form/movies-add-form'
 import { v4 as uuidv4 } from 'uuid';
 
+const App=()=>{
+    const [data, setData]=useState(
+        [
+            { name: 'Empire of osman', viewers: 567, favourite: false, like: false, id: 1 },
+            { name: 'Ertugrul', viewers: 789, favourite: false, like: false, id: 2 },
+            { name: 'Omar', viewers: 1202, favourite: false, like: false, id: 3 },
+        ])
+        const [term, setTerm]=useState('')
+        const [filter, setFilter]=useState('')
+}
+
 class App extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            data: [
-                { name: 'Empire of osman', viewers: 567, favourite: false, like: false, id: 1 },
-                { name: 'Ertugrul', viewers: 789, favourite: false, like: false, id: 2 },
-                { name: 'Omar', viewers: 1202, favourite: false, like: false, id: 3 },
-            ]
-        }
-    }
 
     onDelete = id => {
         this.setState(({ data }) => {
